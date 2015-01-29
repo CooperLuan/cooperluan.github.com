@@ -11,6 +11,11 @@ tags: [python, pandas, snippet]
 
 - 像 RDB 一样 `left join` 两个 `dataset`
 - 在多级索引的 `dataset` 中使用索引
+- 重命名某一列 renaming column/columns
+- 增加一列 adding new column
+- 同时处理多列 apply functions to multiple columns
+- 有关 NaN 的处理
+- 组合检索 chaining conditions
 
 ### 像 RDB 一样 join 两个 dataset
 
@@ -81,4 +86,48 @@ Out[1]:
           Val
 A B          
 d g  0.257651
+```
+
+## 重命名某一列
+
+```python
+df.rename(columns={
+    'S': 'Strength',
+    'W': 'Weak',
+    'O': 'Opportunity',
+    'T': 'Threat',
+})
+df.columns
+```
+
+## 增加一列 adding new column
+
+```python
+df.insert(loc=3, column='newCol', value=None)
+df.head()
+```
+
+## 同时处理多列 apply functions to multiple columns
+
+```python
+cols = ['A', 'B', 'C']
+df[cols] = df[cols].applymap(lambda x: x.lower())
+```
+
+## 有关 NaN 的处理
+
+```python
+# count NaN
+df.shape[0] - df.dropna().shape[0]
+# selecting NaN rows
+df[df['B'].isnull()]
+# selecting not null rows
+df[df['B'].notnull()]
+```
+
+## 组合检索 chaining conditions
+
+```python
+df[(df['blood'] == 'B') | (df['blood'] == 'AB')]
+df[(df['blood'] == 'B') & (df['blood'] == 'AB')]
 ```
