@@ -22,23 +22,7 @@ tags: [mongodb, aggregate]
 
 - `aggregate(pipeline,options)` 指定 group 的 keys, 通过操作符 `$push/$addToSet/$sum` 等实现简单的 reduce, 不支持函数/自定义变量
 - `group({ key, reduce, initial [, keyf] [, cond] [, finalize] })` 支持函数(`keyf`) `mapReduce` 的阉割版本
-- `mapReduce` 和 `group` 类似, map/reduce 均可指定函数 只支持输出到 collection
-
-  ```javascript
-mapReduce(
-    <map>,
-    <reduce>, {
-        out: <collection>,
-        query: <document>,
-        sort: <document>,
-        limit: <number>,
-        finalize: <function>,
-        scope: <document>,
-        jsMode: <boolean>,
-        verbose: <boolean>,
-})
-  ```
-
+- `mapReduce` 终极大杀器
 - `count(query)` too young too simple
 - `distinct(field,query)`
 
@@ -53,7 +37,11 @@ mapReduce(
 
 ## 样本数据
 
-样本输出
+- created 时间戳(ms)
+- group 组别 [A-Z]
+- category 目录 C[1-10]
+- count
+- title 26 个字母随机组成
 
 ```javascript
 {'group': 'E', 'created': 1402764223433, 'count': 63, 'datetime': datetime.datetime(2014, 6, 15, 0, 43, 43, 433000), 'title': 'KNBVHICLGOUESDFYTJWRXMPZQA', 'category': 'C8'}
@@ -70,9 +58,9 @@ mapReduce(
 
 ## aggregate
 
-用累加符号聚合的方法, 接受两个参数 `pipeline`/`options`, `pipeline` 是 array, 相同的 operator 可以多次使用
+接受两个参数 `pipeline`/`options`, `pipeline` 是 array, 相同的 operator 可以多次使用
 
-pipeline options
+pipeline 支持的方法
 
 - `$geoNear` 不予测试
 - `$group` 指定 group 的 `_id`(key/keys) 和基于操作符(`$push`/`$sum`/...) 的累加运算
