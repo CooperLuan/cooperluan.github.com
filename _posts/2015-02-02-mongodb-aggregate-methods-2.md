@@ -76,11 +76,6 @@ pipeline options
 
 - `$geoNear` 不予测试
 - `$group` 指定 group 的 `_id`(key/keys) 和基于操作符(`$push`/`$sum`/...) 的累加运算
-
-  允许用的累加操作符只能是 `$addToSet`/`$avg`/`$first`/`$last`/`$max`/`$min`/`$push`/`$sum`  
-  不被允许的累加操作符 `$each`  
-  `$group` 操作默认最多可以用 100MB RAM, 增加 `allowDiskUse` 可以让 `$group` 操作更多的数据
-
 - `$limit` 限制输出
 - `$match` 输入过滤条件
 - `$out` 将输出结果保存到 `collection`
@@ -89,6 +84,10 @@ pipeline options
 - `$skip`
 - `$sort` 对结果排序
 - `$unwind` 拆解数据
+
+`$group` 允许用的累加操作符 `$addToSet`/`$avg`/`$first`/`$last`/`$max`/`$min`/`$push`/`$sum`  
+不被允许的累加操作符 `$each`...  
+`$group` 操作默认最多可以用 100MB RAM, 增加 `allowDiskUse` 可以让 `$group` 操作更多的数据
 
 下面是一个揉进全部特性的用法
 
@@ -203,10 +202,10 @@ db.data.group({
 - `out` 结果转存 可以选择另外一个 db
 - `scope` 设置全局变量
 - `jdMode`(false) 是否(默认是)把 map/reduce 中间结果转为 BSON 格式, BSON 格式可以利用磁盘空间, 这样就可以处理大规模的数据集
-
-  如果设为 true 不进行 BSON 转换, 可以优化 reduce 的执行速度, 但是由于内存限制最大在 emit 数量小于 500,000 时使用
-
 - `verbose`(true) 详细信息
+
+如果设 `jsMode` 为 true 不进行 BSON 转换, 可以优化 reduce 的执行速度, 但是由于内存限制最大在 emit 数量小于 500,000 时使用
+
 
 写 mapReduce 时需要注意
 
@@ -272,6 +271,12 @@ db.data.mapReduce(function() {
 |aggregate  | true      |     pipeline/collection |  false |
 |group      | false     | pipeline   | true       |
 |mapReduce  | jsMode    | pipeline/collection | true |
+
+
+- `aggregate` 基于累加操作的的聚合 可以重复利用 `$project`/`$group` 一层一层聚合数据, 可以用于大量数据(单输出结果小于 16MB)  不可用于分片数据
+- `mapReduce` 可以处理超大数据集 需要严格遵守 mapReduce 中的结构一致/幂等 写法,   可增量输出/合并, 见 `out` options
+- `group` RDB 中的 `group by` 简单需求可用(只有 inline 输出)  会产生 `read lock`
+- [StackOverflow 中关于三者比较的解答](http://stackoverflow.com/questions/12337319/mongodb-aggregation-comparison-group-group-and-mapreduce)
 
 ## 清理
 
