@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[译文] Launch of learning path – Data Science in Python & Python 科学计算学习路线"
+title: "[译] Launch of learning path – Data Science in Python & Python 科学计算学习路线"
 description: "技术类文章翻译"
 category: [翻译]
 tags: [翻译, Python]
