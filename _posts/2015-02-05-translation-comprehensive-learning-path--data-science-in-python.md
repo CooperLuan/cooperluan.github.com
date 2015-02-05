@@ -2,8 +2,8 @@
 layout: post
 title: "[译] Comprehensive learning path – Data Science in Python & Python 科学计算的学习路径"
 description: ""
-category: [翻译, Python, Data, 科学计算]
-tags: [翻译, Python, 科学计算, Data]
+category: [Translation, Python, Data]
+tags: [Translation, Python, Data]
 ---
 {% include JB/setup %}
 
