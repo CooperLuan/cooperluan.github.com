@@ -10,7 +10,7 @@ tags: [javascript, Translation]
 原文 [all this](http://bjorn.tipling.com/all-this)
 
 你可能认为 JavaScript 中的 `this` 和面向对象语言如 `JAVA` 中的 `this` 一样, 是对实例属性的引用.
-事实不是这样的, JavaScript 中的 `this` 是一个潘多拉魔盒(译者注: 作者引用了哈利波特中黑魔法防御课老师用来关恶灵的衣柜..)
+事实不是这样的, JavaScript 中的 `this` 是一个潘多拉魔盒(译者注: 作者引用了哈利波特中黑魔法防御课卢平教授用来关恶灵的柜子..)
 
 下面是我想让我的工作伙伴都了解的 JavaScript 中 `this` 的用法, 内容很丰富, 有些知识点我花了几年的时间才能学到
 
@@ -227,6 +227,257 @@ console.log(car2.colors);       // ["G"]
 ```
 
 你可以把很多函数的 `prototype` 连起来组成 `prototype chain`, 这样用 `this` 引用属性时会沿着 `prototype chain` 
+
+```js
+function Car() {
+  this.seats = 4;
+}
+Car.prototype.color = 'Blue';
+function Driver() {
+}
+Driver.prototype = new Car();
+var driver = new Driver();
+console.log(driver.color, driver.seats);    // Blue 4
+```
+
+有人在 JavaScript 中用 `this` 模拟面向对象中的继承. 
+
+> Any assignments to this in functions used to create the prototype chain will hide values defined further up the prototype chain.
+
+不知怎么翻译, 但是从代码结果看, 对 `this` 的赋值符合 OO 的特性
+
+```js
+function Hard() {
+  this.color = "Black";
+}
+function Car() {
+  this.color = 'Orange';
+}
+Car.prototype = new Hard();
+function Tank() {}
+Tank.prototype = new Car();
+function AirPlain() {}
+AirPlain.prototype = new Hard();
+
+console.log(new Tank().color);    // Orange
+console.log(new AirPlain().color);  // Black
+```
+
+我把赋值到 `prototype` 的函数称作 `methods` 方法, 我在上面的例子中用了一些 `methods`(方法) 如 `logColor`.
+这些 `methods`(方法) 和用来创建它的源函数一样, 有 `this` 这个魔法.
+
+在 `prototype` 上定义的方法中引用的 `this` 指向当前实例
+
+```js
+function VW() {
+  this.color = 'Black';
+}
+VW.prototype.logColor = function() {
+  console.log(this.color);
+}
+function Volvo() {
+  this.color = 'Slivery';
+}
+Volvo.prototype = new VW();
+
+var car = new Volvo();
+car.logColor();     // Slivery
+```
+
+在 JavaScript 中你可以嵌套函数, 也就是说可以在函数中定义函数, 当嵌套函数在闭包中引用在父函数中定义的变量时, 并不会继承 `this`
+
+```js
+var foo = "bar";
+function Car() {}
+Car.prototype.color = "Slivery";
+Car.prototype.logColorInClosure = function() {
+  var info = "Log color in closure";
+  function logIt() {
+    console.log(info, this.color);
+    console.log(this.foor);
+  }
+  logIt();
+}
+var car  = new Car();
+car.logColorInClosure();
+// Log color in closure undefined
+// bar
+```
+
+`logColorInClosure` 中的 `this` 是 `global` 中的对象(例子中的 `foo`), 在 `use strict` 情况下是 undefined. 这对于很多不熟悉 JavaScript 中 `this` 的人来说痛苦的根源.
+
+有更糟糕的情况, 如果把实例方法当作一个函数参数, 方法中的 `this` 就恢复为对 `global` 的引用了, 在 `use strict` 的情况下是 `undefined`
+
+```js
+function Car() {
+  this.color = 'Slivery';
+  this.logColor = function() {
+    console.log(this.color);
+  }
+}
+function logColorInAnother(method) {
+  method();
+}
+var car = new Car();
+car.logColor();                 // Slivery
+logColorInAnother(car.logColor);    // undefined
+```
+
+有的人倾向于用 `self` 捕捉 `this`, 避免同时用 `this`/`that`
+
+```js
+function Car() {}
+Car.prototype.color = 'Slivery';
+Car.prototype.logColor = function() {
+  var self = this;
+  function logColorInClosure() {
+    console.log(self.color, this.color);
+  }
+  logColorInClosure();
+}
+var car = new Car();
+car.logColor();         // Slivery undefined
+```
+
+但是如果你需要把方法当成值到处传递, 上面的方法就有问题了
+
+```js
+function Car() {}
+Car.prototype.color = 'Slivery';
+Car.prototype.logColor = function() {
+  var self = this;
+  function logColorInClosure() {
+    console.log(self.color);
+  }
+  logColorInClosure();
+}
+var car = new Car();
+car.logColor();           // Slivery
+
+function doIt(method) {
+  method();
+}
+doIt(car.logColor);       // undefined
+```
+
+你可以用函数的 `bind` 方法绑定实例后传递
+
+```js
+function Car() {}
+Car.prototype.color = 'Slivery';
+Car.prototype.logColor = function() {
+  function logColorInClosure() {
+    console.log(this.color);
+  }
+  logColorInClosure();
+}
+function doIt(method) {
+  method();
+}
+var car = new Car();
+doIt(car.logColor.bind(car));       // Slivery
+```
+
+也可以用 `apply`/`call` 立即调用函数或方法
+
+```js
+function Car() {}
+Car.prototype.color = 'Slivery';
+Car.prototype.logColor = function() {
+  function logColorInClosure() {
+    console.log(this.color);
+  }
+  logColorInClosure.apply(this);
+  // logColorInClosure.call(this);
+}
+function doIt(method) {
+  method();
+}
+var car = new Car();
+doIt(car.logColor.bind(car));       // Slivery
+```
+
+对任何函数或方法, 你可以用 `bind` 代替 `this`, 即使它没有被赋值到 `prototype` 上
+
+```js
+function Car() {}
+Car.prototype.color = 'Slivery';
+
+function logColor() {
+  console.log(this.color);
+}
+var car = new Car();
+logColor.bind(car)();         // Slivery
+logColor.apply(car);          // Slivery
+logColor.call(car);           // Slivery
+logColor();                   // undefined
+```
+
+如果你在 `function` 中返回了任何东西, 所有的魔法就都消失了
+
+```js
+function Car() {
+  return {};
+}
+Car.prototype.color = "Slivery";
+Car.prorotype.logColor = function() {
+  console.log(this.color);
+}
+var car = new Car();
+car.logColor();           // Uncaught TypeError: Cannot set property 'logColor' of undefined
+```
+
+奇怪的是, 如果你在 `function` 中返回一个字母/数字类型的值, 上面的现象就不会发生了, `return` 语句将被忽略. 永远不要在你要 `new` 的 `function` 中返回任何东西. 如果你想创建一个工厂模式, 用函数而不是 `new` 来创建实例, 当然这只是个建议.
+
+你可以用 `Object.create` 代替 `new` 来创建对象
+
+```js
+function Car() {}
+Car.prototype.color = 'Slivery';
+Car.prototype.logColor = function() {
+  console.log(this.color);
+}
+var car = Object.create(Car.prototype);
+car.logColor();           // Slivery
+```
+
+但是这样的话就不会调用 `function` 中定义的过程了
+
+```js
+function Car() {
+  this.color = "Black";
+}
+Car.prototype.color = 'Slivery';
+Car.prototype.logColor = function() {
+  console.log(this.color);
+}
+var car = Object.create(Car.prototype);
+var car2 = new Car();
+car.logColor();           // Slivery
+car2.logColor();          // Black
+```
+
+因为 `Object.create` 不会调用 `function` 中定义的过程, 在创建继承模式的时候这个特性就有用了
+
+```js
+function Car() {
+  this.color = "Black";
+}
+Car.prototype.color = 'Slivery';
+Car.prototype.logColor = function() {
+  console.log(this.color);
+}
+
+function Tank() {
+  this.logColor(this.color);        // Slivery
+  Car.apply(this);
+  this.logColor(this.color);        // Black
+}
+Tank.prototype = Object.create(Car.prototype);
+var tank = new Tank();
+```
+
+
 
 ## object this
 

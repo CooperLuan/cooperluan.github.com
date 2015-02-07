@@ -2,8 +2,8 @@
 layout: post
 title: "读 30 岁前的每一天 摘抄"
 description: "豆瓣读书 30 岁前的每一天 摘抄"
-category: 读书
-tags: [读书, 摘抄]
+category: reading
+tags: [reading, notes, quotes]
 ---
 {% include JB/setup %}
 

@@ -2,8 +2,8 @@
 layout: post
 title: "黑天鹅 Black swan : the impact of the highly improbable 电子书笔记"
 description: "黑天鹅 电子书笔记"
-category: 读书
-tags: [读书, 笔记]
+category: reading
+tags: [reading, notes]
 ---
 {% include JB/setup %}
 
