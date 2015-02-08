@@ -9,6 +9,8 @@ tags: [javascript, Translation]
 
 原文 [all this](http://bjorn.tipling.com/all-this)
 
+> 译者注: 我在这之前只写过管理后台类型的 JS 代码, 所以翻译这篇含金量很高的文章会有一些问题, 一是之前没想过会有 this 这种困扰, 二是作者用了很多长句子, 有的问题只好生硬直译或者按照我理解的意思换上我的表达, 建议粗看后去看原文
+
 你可能认为 JavaScript 中的 `this` 和面向对象语言如 `JAVA` 中的 `this` 一样, 是对实例属性的引用.
 事实不是这样的, JavaScript 中的 `this` 是一个潘多拉魔盒(译者注: 作者引用了哈利波特中黑魔法防御课卢平教授用来关恶灵的柜子..)
 
@@ -477,10 +479,224 @@ Tank.prototype = Object.create(Car.prototype);
 var tank = new Tank();
 ```
 
-
-
 ## object this
+
+你可以在对象(object)上的任意函数里面使用 `this` 指向对象(object)上的其他属性, 这点和用 `new` 创建的实例不一样
+
+```js
+var obj = {
+  foo: "bar",
+  logFoo: function() {
+    console.log(this.foo);
+  }
+}
+obj.logFoo();         // bar
+```
+
+注意这里没有用 `new`/`Object.create` 也没有调用函数来创建 `obj`, 但是你也可以像函数实例一样 `bind` 到一个函数上
+
+```js
+var obj = {
+  foo: "bar",
+}
+function logFoo() {
+  console.log(this.foo);
+}
+logFoo.apply(obj);        // bar
+logFoo.bind(obj)();       // bar
+```
+
+当你像下面这样用多级 `object` 时, `this` 无法回溯到上一层寻找它要的属性, 只有当它们的上一级 `object` 是同一个时 `this` 才有效
+
+```js
+var obj = {
+  foo: "bar",
+  logFoo: function() {
+    function logIt() {
+      console.log(this.foo);
+    }
+    logIt();
+  },
+  logFooDeeper: {
+    logIt: function() {
+      console.log(this.foo);
+    }
+  }
+}
+obj.logFoo();             // undefined
+obj.logFooDeeper.logIt(); // undefined
+
+但是你可以不通过 `this` 而直接引用你想要的值
+
+```js
+var obj = {
+  foo: "bar",
+  deeper: {
+    logFoo: function() {
+      console.log(obj.foo);
+    }
+  }
+}
+obj.deeper.logFoo();        // bar
+```
 
 ## DOM Event this
 
+在 `HTML DOM` 事件处理函数中, `this` 总是指向事件绑定的 `DOM` 元素
+
+```js
+function Listener() {
+    document.getElementById("foo").addEventListener("click",
+       this.handleClick);
+}
+Listener.prototype.handleClick = function (event) {
+    console.log(this); //logs "<div id="foo"></div>"
+}
+
+var listener = new Listener();
+document.getElementById("foo").click();
+```
+
+除非你手动绑定了一个 `this`
+
+```js
+function Listener() {
+    document.getElementById("foo").addEventListener("click", 
+        this.handleClick.bind(this));
+}
+Listener.prototype.handleClick = function (event) {
+    console.log(this); //logs Listener {handleClick: function}
+}
+
+var listener = new Listener();
+document.getElementById("foo").click();
+```
+
 ## HTML this
+
+在可以加 JavaScript 代码的所有属性中, `this` 指向当前元素
+
+```html
+<div id="foo" onclick="console.log(this);"></div>
+<script type="text/javascript">
+document.getElementById("foo").click(); //logs <div id="foo"...
+</script>
+```
+
+## override this
+
+不能重写 `this` 因为它是个关键词
+
+```js
+function test() {
+  var this = {};
+}
+// Uncaught SyntaxError: Unexpected token this
+```
+
+无法通过语法检查
+
+## eval this
+
+你可以在 `eval` 中访问 `this`
+
+```js
+function Car() {
+  this.color = "Slivery";
+  this.logColor = function() {
+    eval("console.log(this.color)");
+  }
+}
+var car = new Car();
+car.logColor();         // Slivery
+```
+
+这是个安全问题, 只能通过禁止使用 `eval` 来避免
+
+通过 `Function` 创建的函数也可以访问 `this`
+
+```js
+function Car() {
+  this.color = "Slivery";
+  this.logColor = new Function("console.log(this.color)");
+}
+var car = new Car();
+car.logColor();       // Slivery
+```
+
+## with this
+
+你可以用 `with` 把 `this` 加到当前的作用域中来读写 `this` 中的属性
+
+```js
+function Car() {
+  this.color = "Black",
+  this.logColor = function() {
+    with(this) {
+      color = "Slivery";
+      console.log(color);
+    }
+  }
+}
+var car = new Car();
+car.logColor();         // Slivery
+console.log(car.color); // Slivery
+```
+
+许多人认为这样不好因为 `with` 有歧义问题
+
+## jQuery this
+
+和 `HTML DOM` 事件处理中的 `this` 一样, `jQuery` 中的 `this` 在很多情况下也指向一个 DOM 元素, 如 `event handler` 和 `$.each` 这种方法
+
+```html
+<div class="foo bar1"></div>
+<div class="foo bar2"></div>
+<script type="text/javascript">
+$(".foo").each(function () {
+    console.log(this); //logs <div class="foo...
+});
+$(".foo").on("click", function () {
+    console.log(this); //logs <div class="foo...
+});
+$(".foo").each(function () {
+    this.click();
+});
+</script>
+```
+
+## thisArg this
+
+如果你用 [`underscore.js`](http://underscorejs.org/)/[`lo-dash`](http://lodash.com/), 你大概会知道可以通过函数参数 `thisArg`(会被当作 `this`) 来传递一个实例, 比如 `_.each` 就是这样. `ECMAScript 5` 之后 JavaScript 中的原生方法也支持 `thisArg` 比如 `forEach`. 前面在演示 `bind/apply/call` 时, 就是用 `thisArg` 传递了实例
+
+```js
+function Thing(type) {
+    this.type = type;
+}
+Thing.prototype.log = function (thing) {
+    console.log(this.type, thing);
+}
+Thing.prototype.logThings = function (arr) {
+   arr.forEach(this.log, this);
+   // _.each(arr, this.log, this);
+}
+
+var thing = new Thing("fruit");
+thing.logThings(["apples", "oranges", "strawberries", "bananas"]);
+// fruit apples
+// fruit oranges
+// fruit strawberries
+// fruit bananas
+```
+
+这样就不需要写很多嵌套绑定语句, 不需要再使用 `self`
+
+## End
+
+一些编程语言容易学, 比如 [Go](http://golang.org/) 的 SPEC 可以在很短时间内读完. 一旦读完 SPEC 就可以理解这门语言, 就不需要太多的担心技巧和陷阱, 更不用说实现细节了
+
+JavaScript 并不是这样易懂的语言, SPEC 不易读懂, 有许多陷阱, 所以有许多人会讨论 [The God Parts](http://www.amazon.com/JavaScript-Good-Parts-Douglas-Crockford/dp/0596517742), 目前返现的最好的文档在 [Mozilla Developer Network](https://developer.mozilla.org/en-US/), 我推荐阅读那篇文档中关于 [this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) 的部分, 并在用 Google 查找 JavaScript 相关的问题时加上 `mdn` 的前缀, 这样总能查找到最好的文档. 静态代码分析也非常有帮助, 我一般用 [jshint](http://www.jshint.com/)
+
+如果有任何问题请在 Twitter 上联系 [我bjorntipling](https://twitter.com/bjorntipling)
+
+更新: @hicksyfern 在他的博客上有一篇更简短的［some of this](http://tomhicks.github.io/code/2014/08/11/some-of-this.html)
