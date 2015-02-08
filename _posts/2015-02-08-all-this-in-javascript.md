@@ -10,11 +10,25 @@ tags: [javascript, Translation]
 原文 [all this](http://bjorn.tipling.com/all-this)
 
 > 译者注: 我在这之前只写过管理后台类型的 JS 代码, 所以翻译这篇含金量很高的文章会有一些问题, 一是之前没想过会有 this 这种困扰, 二是作者用了很多长句子, 有的问题只好生硬直译或者按照我理解的意思换上我的表达, 建议粗看后去看原文
+> 重点在最后几段, 建议看完
 
 你可能认为 JavaScript 中的 `this` 和面向对象语言如 `JAVA` 中的 `this` 一样, 是对实例属性的引用.
 事实不是这样的, JavaScript 中的 `this` 是一个潘多拉魔盒(译者注: 作者引用了哈利波特中黑魔法防御课卢平教授用来关恶灵的柜子..)
 
 下面是我想让我的工作伙伴都了解的 JavaScript 中 `this` 的用法, 内容很丰富, 有些知识点我花了几年的时间才能学到
+
+- [global this](#global-this)
+- [function this](#function-this)
+- [prototype this](#prototype-this)
+- [object this](#object-this)
+- [DOM Event this](#dom-event-this)
+- [HTML this](#html-this)
+- [override this](#override-this)
+- [eval this](#eval-this)
+- [with this](#with-this)
+- [jQuery this](#jquery-this)
+- [thisArg this](#thisarg-this)
+- [End](#end)
 
 ## global this
 
