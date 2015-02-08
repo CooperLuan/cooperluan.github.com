@@ -525,6 +525,7 @@ var obj = {
 }
 obj.logFoo();             // undefined
 obj.logFooDeeper.logIt(); // undefined
+```
 
 但是你可以不通过 `this` 而直接引用你想要的值
 
