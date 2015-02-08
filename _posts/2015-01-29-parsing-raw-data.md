@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "parsing raw data 怎样优雅的清理原始数据"
+title: "[译] parsing raw data 怎样优雅的清理原始数据"
 description: "文章读后总结"
-category: data
-tags: [data]
+category: [data, translation]
+tags: [data, translation]
 ---
 {% include JB/setup %}
 
