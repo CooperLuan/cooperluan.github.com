@@ -10,7 +10,6 @@ tags: [quote, 学习, 阅读]
 
 - [一直以来伴随我的一些学习习惯(part1)](http://blog.csdn.net/pongba/article/details/2625115)
 - [一直以来伴随我的一些学习习惯(part2)](http://blog.csdn.net/pongba/article/details/2681668)
-- [一直以来伴随我的一些学习习惯(part3)](http://blog.csdn.net/pongba/article/details/2942482)
 
 ## 目录
 
