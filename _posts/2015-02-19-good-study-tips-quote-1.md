@@ -6,6 +6,10 @@ category: [reading]
 tags: [quote, 学习, 阅读]
 ---
 {% include JB/setup %}
+
+> 构思来源: 刘未鹏在 CSDN 博客上的一系列 学习习惯 相关的文章, 里面提到的很多点滴相当实际/深刻, 
+> 恰好最近又遇到明显的学习/成长瓶颈, 读这几篇文章有很大的帮助
+
 ## 原文
 
 - [一直以来伴随我的一些学习习惯(part1)](http://blog.csdn.net/pongba/article/details/2625115)
