@@ -360,4 +360,4 @@ tags: [quote, 学习, 阅读]
 - [TopLanguage](https://groups.google.com/forum/#!forum/pongba)
 - [Computer Systems: A Programmer's Perspective](http://book.douban.com/subject/3023631/)
 - [别做正常的傻瓜](http://book.douban.com/subject/1874488/)
-- [与“众”不同的心理学](#如何正视心理学) 停版了 在淘宝上买吧
+- [与“众”不同的心理学](#) 停版了 在淘宝上买吧
