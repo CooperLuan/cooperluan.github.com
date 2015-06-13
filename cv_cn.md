@@ -45,7 +45,7 @@ title: "简历 栾艳明 Cooper (zh-CN)"
  - Github: [http://github.com/CooperLuan](http://github.com/CooperLuan)
  - 微博: [@小栾Cooper](http://weibo.com/gsavl)
  - 期望职位: Python工程师/数据分析工程师/NodeJS工程师/前端工程师
- - 期望薪资: 税前月薪 18k~25k, 特别喜欢的公司可例外
+ - 期望薪资: 税前月薪 18k~25k
  - 期望城市: 上海
 
 ---
