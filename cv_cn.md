@@ -44,13 +44,24 @@ title: "简历 栾艳明 Cooper (zh-CN)"
  - 技术博客: [CooperBlog](http://cooperluan.github.io)
  - Github: [http://github.com/CooperLuan](http://github.com/CooperLuan)
  - 微博: [@小栾Cooper](http://weibo.com/gsavl)
- - 期望职位: Python工程师/数据分析工程师/NodeJS工程师/前端工程师
- - 期望薪资: 税前月薪 18k~25k
+ - 期望职位: Python工程师/数据分析工程师
+ - 期望薪资: 税前月薪 17k~25k
  - 期望城市: 上海
 
 ---
 
 ## 工作经历
+
+### 大岂网络 (2015.3 ~ 今) Python 工程师
+
+1. 职责 从 0 开始负责公司的数据统计、分析、挖掘的实现
+2. 挑战 日益增长的日志的存储、数据清洗、统计优化、运营活动效果重现/跟踪、数据分析挖掘、繁杂的数据需求
+3. 解决方法
+    - 用 MongoDB 存储
+    - 用 pandas 从 Mongo 加载数据 分析用户行为
+    - 用 Mongo 的 aggregate 做中小量数据的聚合
+    - 提供大量的统计数据类 API 供 Web/其他系统/其他 使用
+
 
 ### 菜根科技 (2014.4 ~ 2015.3) Python 工程师
 
