@@ -140,12 +140,14 @@ title: "简历 栾艳明 Cooper (zh-CN)"
 - Web框架: flask/tornado
 - 前端框架: Bootstrap 体系/jQuery
 - 数据库相关: MongoDB/MySQL
-- 版本管理、文档: Git/SVN/Github
+- 版本管理、文档: Git/Github
 - 云和开放平台: 微博开放平台/微信应用开发
 
 以下为我认为可以快速学习并投入开发的
 
 - Django
+- scikit-learn
+- Spark/Hadoop
 - Python 运维工具
 - Web 前端
 - JAVA
@@ -154,4 +156,5 @@ title: "简历 栾艳明 Cooper (zh-CN)"
 ---
 
 ## 致谢
+
 感谢您花时间阅读我的简历，期待能有机会和您共事
